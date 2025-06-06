@@ -12,7 +12,7 @@ namespace CentralSecurityService.Pages
                 return BadRequest("Reference File name cannot be null or empty.");
 
             // TODO: Make path configurable or use a safer method to construct paths.
-            var filePathAndName = Path.Combine("/CentralSecurityService/References", referenceFile);
+            var filePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", referenceFile);
 
             if (!System.IO.File.Exists(filePathAndName))
                 return NotFound();
