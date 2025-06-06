@@ -5,7 +5,7 @@ namespace CentralSecurityService.Pages
 {
     public class ReferencesModel : PageModel
     {
-        public void OnGet()
+        public async Task OnGetAsync()
         {
         }
     }

@@ -19,7 +19,7 @@ namespace CentralSecurityService.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
