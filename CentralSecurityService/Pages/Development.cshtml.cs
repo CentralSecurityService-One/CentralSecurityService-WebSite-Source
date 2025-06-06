@@ -1,43 +1,88 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.StaticFiles;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace CentralSecurityService.Pages
 {
     public class DevelopmentModel : PageModel
     {
+        private ILogger<DevelopmentModel> Logger { get; }
+
+        private IWebHostEnvironment WebHostEnvironment { get; }
+
+        [BindProperty]
+        public long ReferenceId { get; set; }
+
+        [BindProperty]
+        public IFormFile FileToUpload { get; set; }
+
+        public DevelopmentModel(ILogger<DevelopmentModel> logger, IWebHostEnvironment webHostEnvironment)
+        {
+            Logger = logger;
+            WebHostEnvironment = webHostEnvironment;
+        }
+
         public async Task<IActionResult> OnGetAsync(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName))
-                return BadRequest("File name cannot be null or empty.");
+            long referenceId = 9235612786; // Example reference ID, replace with actual logic if needed.
 
-            var filePathAndName = Path.Combine("/DevelopmentImages", fileName);
+            var formatted = $"{referenceId:R000_000_000}";
 
-            if (!System.IO.File.Exists(filePathAndName))
-                return NotFound();
+            return Page();
+        }
 
-            var provider = new FileExtensionContentTypeProvider();
-
-            if (!provider.TryGetContentType(filePathAndName, out string contentType))
+        public async Task OnPostAsync(string action)
+        {
+            try
             {
-                contentType = "application/octet-stream"; // default fallback
+                if (FileToUpload == null || FileToUpload.Length == 0)
+                {
+                    Logger.LogWarning("No file was uploaded or the file is empty.");
+                    return;
+                }
+
+                var inputFileName = $"{ReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
+
+                var outputFileName = $"{ReferenceId:R000_000_000}_001-Width_125-{FileToUpload.FileName}";
+
+                // TODO: Make path configurable or use a safer method to construct paths.
+                var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", inputFileName);
+
+                var outputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", outputFileName);
+
+                using (var fileStream = new FileStream(inputFilePathAndName, FileMode.Create))
+                {
+                    await FileToUpload.CopyToAsync(fileStream);
+                }
+
+                ResizeImage(inputFilePathAndName, outputFilePathAndName, 125);
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(exception, "An Exception occurred.");
+            }
+        }
+
+        // Courtesy of www.ChatGpt.com.
+        public void ResizeImage(string inputFilePathAndName, string outputFilePathAndName, int resizedWidth)
+        {
+            using var originalImage = Image.FromFile(inputFilePathAndName);
+
+            int resizedHeight = originalImage.Height * resizedWidth / originalImage.Width;
+
+            using var resizedImage = new Bitmap(resizedWidth, resizedHeight);
+
+            using (var graphics = Graphics.FromImage(resizedImage))
+            {
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+                graphics.DrawImage(originalImage, 0, 0, resizedWidth, resizedHeight);
             }
 
-            var image = System.IO.File.OpenRead(filePathAndName);
-
-            return File(image, contentType); // ASP.NET Core [allegedly] disposes stream after response.
+            resizedImage.Save(outputFilePathAndName);
         }
-    }
-}
-public class ImageController : Controller
-{
-    public IActionResult GetImage(string fileName)
-    {
-        var path = Path.Combine("C:/ServerImages/", fileName);
-        if (!System.IO.File.Exists(path))
-            return NotFound();
-
-        var image = System.IO.File.OpenRead(path);
-        return File(image, "image/jpeg"); // or use "image/png" depending on file type
     }
 }

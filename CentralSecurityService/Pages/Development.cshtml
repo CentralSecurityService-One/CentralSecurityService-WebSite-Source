@@ -1,4 +1,45 @@
 ﻿@page
 @model CentralSecurityService.Pages.DevelopmentModel
 @{
+    ViewData["Title"] = "Development";
+}
+
+<form method="POST" enctype="multipart/form-data">
+    <div>Reference Id: <input type="text" asp-for="ReferenceId" /></div>
+    <br />
+    <input type="file" id="fileId" asp-for="FileToUpload" />
+    <br />
+    <input type="submit" id="submitId" name="Action" value="Upload File" />
+</form>
+<br />
+<br />
+
+@section Scripts
+{
+    <script>
+        $("#submitId").click(function(event) {
+
+            var preventDefault = true;
+
+            var files = $("#fileId").prop('files');
+
+            if (files.length <= 0) {
+
+                alert('No File has been Selected.');
+            } else {
+
+                var file = files[0];
+
+                if (file.size > 29000000) {
+                    alert('The File Size is Too Big to Upload.');
+                } else {
+                    preventDefault = false;
+                }
+            }
+
+            if (preventDefault) {
+                event.preventDefault();
+            }
+        });
+    </script>
 }
