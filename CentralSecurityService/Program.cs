@@ -1,4 +1,6 @@
 using CentralSecurityService.Configuration;
+using CentralSecurityService.DataAccess.CentralSecurityService.Databases;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Serilog;
 
@@ -17,11 +19,17 @@ namespace CentralSecurityService
 
             builder.Host.UseSerilog();            // Add services to the container.
 
-            builder.Services.AddRazorPages();
+            var services = builder.Services;
+
+            services.AddRazorPages();
 
             builder.Configuration.AddJsonFile("SensitiveSettings/CentralSecurityService.settings.json", optional: false, reloadOnChange: false);
 
             builder.Configuration.GetSection(CentralSecurityServiceSettings.SectionName).Get<CentralSecurityServiceSettings>();
+
+            services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(CentralSecurityServiceSettings.Instance.Database.ConnectionString));
+
+            services.AddScoped<ICentralSecurityServiceDatabase, CentralSecurityServiceDatabase>();
 
             var app = builder.Build();
 

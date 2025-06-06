@@ -1,4 +1,5 @@
 using CentralSecurityService.Configuration;
+using CentralSecurityService.DataAccess.CentralSecurityService.Databases;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
@@ -12,7 +13,7 @@ namespace CentralSecurityService.Pages
     {
         private ILogger<DevelopmentModel> Logger { get; }
 
-        private IWebHostEnvironment WebHostEnvironment { get; }
+        private ICentralSecurityServiceDatabase CentralSecurityServiceDatabase { get; set; }
 
         [BindProperty]
         public long ReferenceId { get; set; }
@@ -20,10 +21,10 @@ namespace CentralSecurityService.Pages
         [BindProperty]
         public IFormFile FileToUpload { get; set; }
 
-        public DevelopmentModel(ILogger<DevelopmentModel> logger, IWebHostEnvironment webHostEnvironment)
+        public DevelopmentModel(ILogger<DevelopmentModel> logger, ICentralSecurityServiceDatabase centralSecurityServiceDatabase)
         {
             Logger = logger;
-            WebHostEnvironment = webHostEnvironment;
+            CentralSecurityServiceDatabase = centralSecurityServiceDatabase;
         }
 
         public async Task<IActionResult> OnGetAsync(string fileName)
@@ -45,7 +46,7 @@ namespace CentralSecurityService.Pages
                     return;
                 }
 
-                long uniqueReferenceId = GetNextUniqueReferenceId();
+                long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
 
                 var inputFileName = $"{uniqueReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
 
@@ -61,8 +62,7 @@ namespace CentralSecurityService.Pages
                     await FileToUpload.CopyToAsync(fileStream);
                 }
 
-                //ResizeImage(inputFilePathAndName, outputFilePathAndName, 125);
-                ResizeImageSkiaSharp(inputFilePathAndName, outputFilePathAndName, 125);
+                SaveThumbnailAsJpeg(inputFilePathAndName, outputFilePathAndName, 125);
             }
             catch (Exception exception)
             {
@@ -71,65 +71,27 @@ namespace CentralSecurityService.Pages
         }
 
         // Courtesy of www.ChatGpt.com (Modified).
-        // TODO: If ever running on Linux use SkiaSharp or ImageSharp instead of System.Drawing.Common.
-        public void ResizeImage(string inputFilePathAndName, string outputFilePathAndName, int resizedWidth)
+        private static void SaveThumbnailAsJpeg(string inputFilePathAndName, string outputFilePathAndName, int targetWidth)
         {
-            using var originalImage = System.Drawing.Image.FromFile(inputFilePathAndName);
-
-            int resizedHeight = originalImage.Height * resizedWidth / originalImage.Width;
-
-            using var resizedImage = new Bitmap(resizedWidth, resizedHeight);
-
-            using (var graphics = Graphics.FromImage(resizedImage))
-            {
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                graphics.DrawImage(originalImage, 0, 0, resizedWidth, resizedHeight);
-            }
-
-            resizedImage.Save(outputFilePathAndName);
-        }
-
-        public static void ResizeImageSkiaSharp(string inputPath, string outputPath, int targetWidth)
-        {
-            // Load the image
-            using var inputStream = System.IO.File.OpenRead(inputPath);
+            // Load the image.
+            using var inputStream = System.IO.File.OpenRead(inputFilePathAndName);
 
             using var original = SKBitmap.Decode(inputStream);
 
             int targetHeight = original.Height * targetWidth / original.Width;
 
-            // Resize
-            using var resized = original.Resize(new SKImageInfo(targetWidth, targetHeight), new SKSamplingOptions(new SKCubicResampler()));
+            // Resize/Get Thumbnail.
+            using var thumbnail = original.Resize(new SKImageInfo(targetWidth, targetHeight), new SKSamplingOptions(new SKCubicResampler()));
 
-            if (resized == null)
-                throw new Exception("Failed to resize image.");
+            if (thumbnail == null)
+                throw new Exception("Failed to resize image / Get Thumbnail.");
 
-            using var image = SKImage.FromBitmap(resized);
-            using var outputStream = System.IO.File.OpenWrite(outputPath);
+            using var image = SKImage.FromBitmap(thumbnail);
+
+            using var outputStream = System.IO.File.OpenWrite(outputFilePathAndName);
 
             // Encode to JPEG (or use .Encode(SKEncodedImageFormat.Png, 100) for PNG).
             image.Encode(SKEncodedImageFormat.Jpeg, 90).SaveTo(outputStream);
-        }
-
-        public long GetNextUniqueReferenceId()
-        {
-            long newId;
-
-            using (SqlConnection conn = new SqlConnection(CentralSecurityServiceSettings.Instance.Database.ConnectionString))
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = new SqlCommand($"SELECT NEXT VALUE FOR {CentralSecurityServiceSettings.Instance.Database.DatabaseSchema}.UniqueReferenceId;", conn))
-                {
-                    object result = cmd.ExecuteScalar();
-                    newId = Convert.ToInt64(result);
-                }
-            }
-
-            return newId;
         }
     }
 }
