@@ -1,5 +1,7 @@
+using CentralSecurityService.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Data.SqlClient;
 using SkiaSharp;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -43,9 +45,11 @@ namespace CentralSecurityService.Pages
                     return;
                 }
 
-                var inputFileName = $"{ReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
+                long uniqueReferenceId = GetNextUniqueReferenceId();
 
-                var outputFileName = $"{ReferenceId:R000_000_000}_001-Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
+                var inputFileName = $"{uniqueReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
+
+                var outputFileName = $"{uniqueReferenceId:R000_000_000}_001-Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
 
                 // TODO: Make path configurable or use a safer method to construct paths.
                 var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", inputFileName);
@@ -108,6 +112,24 @@ namespace CentralSecurityService.Pages
 
             // Encode to JPEG (or use .Encode(SKEncodedImageFormat.Png, 100) for PNG).
             image.Encode(SKEncodedImageFormat.Jpeg, 90).SaveTo(outputStream);
+        }
+
+        public long GetNextUniqueReferenceId()
+        {
+            long newId;
+
+            using (SqlConnection conn = new SqlConnection(CentralSecurityServiceSettings.Instance.Database.ConnectionString))
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand($"SELECT NEXT VALUE FOR {CentralSecurityServiceSettings.Instance.Database.DatabaseSchema}.UniqueReferenceId;", conn))
+                {
+                    object result = cmd.ExecuteScalar();
+                    newId = Convert.ToInt64(result);
+                }
+            }
+
+            return newId;
         }
     }
 }

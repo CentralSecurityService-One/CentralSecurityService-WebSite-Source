@@ -1,3 +1,4 @@
+using CentralSecurityService.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Serilog;
 
@@ -17,6 +18,10 @@ namespace CentralSecurityService
             builder.Host.UseSerilog();            // Add services to the container.
 
             builder.Services.AddRazorPages();
+
+            builder.Configuration.AddJsonFile("SensitiveSettings/CentralSecurityService.settings.json", optional: false, reloadOnChange: false);
+
+            builder.Configuration.GetSection(CentralSecurityServiceSettings.SectionName).Get<CentralSecurityServiceSettings>();
 
             var app = builder.Build();
 
