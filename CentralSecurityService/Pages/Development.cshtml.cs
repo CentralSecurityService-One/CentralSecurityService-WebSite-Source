@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SkiaSharp;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -44,7 +45,7 @@ namespace CentralSecurityService.Pages
 
                 var inputFileName = $"{ReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
 
-                var outputFileName = $"{ReferenceId:R000_000_000}_001-Width_125-{FileToUpload.FileName}";
+                var outputFileName = $"{ReferenceId:R000_000_000}_001-Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
 
                 // TODO: Make path configurable or use a safer method to construct paths.
                 var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", inputFileName);
@@ -56,7 +57,8 @@ namespace CentralSecurityService.Pages
                     await FileToUpload.CopyToAsync(fileStream);
                 }
 
-                ResizeImage(inputFilePathAndName, outputFilePathAndName, 125);
+                //ResizeImage(inputFilePathAndName, outputFilePathAndName, 125);
+                ResizeImageSkiaSharp(inputFilePathAndName, outputFilePathAndName, 125);
             }
             catch (Exception exception)
             {
@@ -64,10 +66,11 @@ namespace CentralSecurityService.Pages
             }
         }
 
-        // Courtesy of www.ChatGpt.com.
+        // Courtesy of www.ChatGpt.com (Modified).
+        // TODO: If ever running on Linux use SkiaSharp or ImageSharp instead of System.Drawing.Common.
         public void ResizeImage(string inputFilePathAndName, string outputFilePathAndName, int resizedWidth)
         {
-            using var originalImage = Image.FromFile(inputFilePathAndName);
+            using var originalImage = System.Drawing.Image.FromFile(inputFilePathAndName);
 
             int resizedHeight = originalImage.Height * resizedWidth / originalImage.Width;
 
@@ -83,6 +86,28 @@ namespace CentralSecurityService.Pages
             }
 
             resizedImage.Save(outputFilePathAndName);
+        }
+
+        public static void ResizeImageSkiaSharp(string inputPath, string outputPath, int targetWidth)
+        {
+            // Load the image
+            using var inputStream = System.IO.File.OpenRead(inputPath);
+
+            using var original = SKBitmap.Decode(inputStream);
+
+            int targetHeight = original.Height * targetWidth / original.Width;
+
+            // Resize
+            using var resized = original.Resize(new SKImageInfo(targetWidth, targetHeight), new SKSamplingOptions(new SKCubicResampler()));
+
+            if (resized == null)
+                throw new Exception("Failed to resize image.");
+
+            using var image = SKImage.FromBitmap(resized);
+            using var outputStream = System.IO.File.OpenWrite(outputPath);
+
+            // Encode to JPEG (or use .Encode(SKEncodedImageFormat.Png, 100) for PNG).
+            image.Encode(SKEncodedImageFormat.Jpeg, 90).SaveTo(outputStream);
         }
     }
 }
