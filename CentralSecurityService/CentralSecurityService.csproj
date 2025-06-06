@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Eadent.Common\Eadent.Common.csproj" />
+    <ProjectReference Include="..\CentralSecurityService.Common\CentralSecurityService.Common.csproj" />
   </ItemGroup>
 
 </Project>

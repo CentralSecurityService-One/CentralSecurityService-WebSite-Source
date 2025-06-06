@@ -1,7 +1,7 @@
+using CentralSecurityService.Common.Configuration;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Databases;
 using CentralSecurityService.Configuration;
-using CentralSecurityService.DataAccess.CentralSecurityService.Databases;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Serilog;
 
 namespace CentralSecurityService
@@ -25,9 +25,9 @@ namespace CentralSecurityService
 
             builder.Configuration.AddJsonFile("SensitiveSettings/CentralSecurityService.settings.json", optional: false, reloadOnChange: false);
 
-            builder.Configuration.GetSection(CentralSecurityServiceSettings.SectionName).Get<CentralSecurityServiceSettings>();
+            builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
 
-            services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(CentralSecurityServiceSettings.Instance.Database.ConnectionString));
+            services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(CentralSecurityServiceCommonSettings.Instance.Database.ConnectionString));
 
             services.AddScoped<ICentralSecurityServiceDatabase, CentralSecurityServiceDatabase>();
 

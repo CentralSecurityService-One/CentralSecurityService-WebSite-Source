@@ -1,14 +1,11 @@
-using CentralSecurityService.Configuration;
-using CentralSecurityService.DataAccess.CentralSecurityService.Databases;
+using CentralSecurityService.Common.Configuration;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Databases;
 using Eadent.Common.WebApi.ApiClient;
 using Eadent.Common.WebApi.DataTransferObjects.Google;
 using Eadent.Common.WebApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Data.SqlClient;
 using SkiaSharp;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace CentralSecurityService.Pages
 {
@@ -21,7 +18,7 @@ namespace CentralSecurityService.Pages
         [BindProperty]
         public IFormFile FileToUpload { get; set; }
 
-        public string GoogleReCaptchaSiteKey => CentralSecurityServiceSettings.Instance.GoogleReCaptcha.SiteKey;
+        public string GoogleReCaptchaSiteKey => CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.SiteKey;
 
         public decimal GoogleReCaptchaScore { get; set; }
 
@@ -49,7 +46,7 @@ namespace CentralSecurityService.Pages
 
             GoogleReCaptchaScore = googleReCaptchaScore;
 
-            if (googleReCaptchaScore < CentralSecurityServiceSettings.Instance.GoogleReCaptcha.MinimumScore)
+            if (googleReCaptchaScore < CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.MinimumScore)
             {
                 Logger.LogWarning("You are unable to Upload A File because of a poor Google ReCaptcha Score {GoogleReCaptchaScore}.", googleReCaptchaScore);
             }
@@ -92,7 +89,7 @@ namespace CentralSecurityService.Pages
         {
             var verifyRequestDto = new ReCaptchaVerifyRequestDto()
             {
-                secret = CentralSecurityServiceSettings.Instance.GoogleReCaptcha.Secret,
+                secret = CentralSecurityServiceCommonSettings.Instance.GoogleReCaptcha.Secret,
                 response = GoogleReCaptchaValue,
                 remoteip = HttpHelper.GetLocalIpAddress(Request)
             };
