@@ -1,3 +1,5 @@
+using Microsoft.Extensions.FileProviders;
+
 namespace CentralSecurityService
 {
     public class Program
@@ -24,6 +26,18 @@ namespace CentralSecurityService
             app.MapStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "Resources")),
+                RequestPath = "/Resources"
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.WebRootPath, "Exhibits")),
+                RequestPath = "/Exhibits"
+            });
 
             app.Run();
         }
