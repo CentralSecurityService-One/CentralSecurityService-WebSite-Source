@@ -24,9 +24,9 @@ namespace CentralSecurityService.Pages
                 contentType = "application/octet-stream"; // Default fallback.
             }
 
-            var image = System.IO.File.OpenRead(filePathAndName);
+            var file = System.IO.File.OpenRead(filePathAndName);
 
-            return File(image, contentType); // ASP.NET Core [allegedly] disposes stream after response.
+            return File(file, contentType); // ASP.NET Core [allegedly] disposes stream after response.
         }
     }
 }
