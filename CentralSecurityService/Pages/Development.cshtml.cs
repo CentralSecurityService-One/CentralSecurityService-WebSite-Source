@@ -16,9 +16,6 @@ namespace CentralSecurityService.Pages
         private ICentralSecurityServiceDatabase CentralSecurityServiceDatabase { get; set; }
 
         [BindProperty]
-        public long ReferenceId { get; set; }
-
-        [BindProperty]
         public IFormFile FileToUpload { get; set; }
 
         public DevelopmentModel(ILogger<DevelopmentModel> logger, ICentralSecurityServiceDatabase centralSecurityServiceDatabase)
