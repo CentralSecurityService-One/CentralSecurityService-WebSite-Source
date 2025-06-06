@@ -1,5 +1,8 @@
 using CentralSecurityService.Configuration;
 using CentralSecurityService.DataAccess.CentralSecurityService.Databases;
+using Eadent.Common.WebApi.ApiClient;
+using Eadent.Common.WebApi.DataTransferObjects.Google;
+using Eadent.Common.WebApi.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
@@ -18,6 +21,13 @@ namespace CentralSecurityService.Pages
         [BindProperty]
         public IFormFile FileToUpload { get; set; }
 
+        public string GoogleReCaptchaSiteKey => CentralSecurityServiceSettings.Instance.GoogleReCaptcha.SiteKey;
+
+        public decimal GoogleReCaptchaScore { get; set; }
+
+        [BindProperty]
+        public string GoogleReCaptchaValue { get; set; }
+
         public DevelopmentModel(ILogger<DevelopmentModel> logger, ICentralSecurityServiceDatabase centralSecurityServiceDatabase)
         {
             Logger = logger;
@@ -35,36 +45,77 @@ namespace CentralSecurityService.Pages
 
         public async Task OnPostAsync(string action)
         {
-            try
+            (bool success, decimal googleReCaptchaScore) = await GoogleReCaptchaAsync();
+
+            GoogleReCaptchaScore = googleReCaptchaScore;
+
+            if (googleReCaptchaScore < CentralSecurityServiceSettings.Instance.GoogleReCaptcha.MinimumScore)
             {
-                if (FileToUpload == null || FileToUpload.Length == 0)
-                {
-                    Logger.LogWarning("No file was uploaded or the file is empty.");
-                    return;
-                }
-
-                long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
-
-                var inputFileName = $"{uniqueReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
-
-                var outputFileName = $"{uniqueReferenceId:R000_000_000}_001-Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
-
-                // TODO: Make path configurable or use a safer method to construct paths.
-                var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", inputFileName);
-
-                var outputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", outputFileName);
-
-                using (var fileStream = new FileStream(inputFilePathAndName, FileMode.Create))
-                {
-                    await FileToUpload.CopyToAsync(fileStream);
-                }
-
-                SaveThumbnailAsJpeg(inputFilePathAndName, outputFilePathAndName, 125);
+                Logger.LogWarning("You are unable to Upload A File because of a poor Google ReCaptcha Score {GoogleReCaptchaScore}.", googleReCaptchaScore);
             }
-            catch (Exception exception)
+            else
             {
-                Logger.LogError(exception, "An Exception occurred.");
+                try
+                {
+                    if (FileToUpload == null || FileToUpload.Length == 0)
+                    {
+                        Logger.LogWarning("No file was uploaded or the file is empty.");
+                        return;
+                    }
+
+                    long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
+
+                    var inputFileName = $"{uniqueReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
+
+                    var outputFileName = $"{uniqueReferenceId:R000_000_000}_001-Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
+
+                    // TODO: Make path configurable or use a safer method to construct paths.
+                    var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", inputFileName);
+
+                    var outputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", outputFileName);
+
+                    using (var fileStream = new FileStream(inputFilePathAndName, FileMode.Create))
+                    {
+                        await FileToUpload.CopyToAsync(fileStream);
+                    }
+
+                    SaveThumbnailAsJpeg(inputFilePathAndName, outputFilePathAndName, 125);
+                }
+                catch (Exception exception)
+                {
+                    Logger.LogError(exception, "An Exception occurred.");
+                }
             }
+        }
+
+        protected async Task<(bool success, decimal googleReCaptchaScore)> GoogleReCaptchaAsync()
+        {
+            var verifyRequestDto = new ReCaptchaVerifyRequestDto()
+            {
+                secret = CentralSecurityServiceSettings.Instance.GoogleReCaptcha.Secret,
+                response = GoogleReCaptchaValue,
+                remoteip = HttpHelper.GetLocalIpAddress(Request)
+            };
+
+            bool success = false;
+
+            decimal googleReCaptchaScore = -1M;
+
+            IApiClientResponse<ReCaptchaVerifyResponseDto> response = null;
+
+            using (var apiClient = new ApiClientUrlEncoded(Logger, "https://www.google.com/"))
+            {
+                response = await apiClient.PostAsync<ReCaptchaVerifyRequestDto, ReCaptchaVerifyResponseDto>("/recaptcha/api/siteverify", verifyRequestDto, null);
+            }
+
+            if (response.ResponseDto != null)
+            {
+                googleReCaptchaScore = response.ResponseDto.score;
+
+                success = true;
+            }
+
+            return (success, googleReCaptchaScore);
         }
 
         // Courtesy of www.ChatGpt.com (Modified).

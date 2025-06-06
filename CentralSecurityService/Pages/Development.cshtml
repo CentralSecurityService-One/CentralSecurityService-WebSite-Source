@@ -4,11 +4,23 @@
     ViewData["Title"] = "Development";
 }
 
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleReCaptchaSiteKey"></script>
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Model.GoogleReCaptchaSiteKey', { action: 'homepage' }).then(function (token) {
+            document.getElementById("GoogleReCaptchaValueId").value = token;
+        });
+    });
+</script>
+
 <form method="POST" enctype="multipart/form-data">
     <br />
     <input type="file" id="fileId" asp-for="FileToUpload" />
     <br />
     <input type="submit" id="submitId" name="Action" value="Upload File" />
+
+    <input type="hidden" id="GoogleReCaptchaValueId" asp-for="GoogleReCaptchaValue" />
 </form>
 <br />
 <br />
