@@ -6,13 +6,13 @@ namespace CentralSecurityService.Pages
 {
     public class GetExhibitModel : PageModel
     {
-        public async Task<IActionResult> OnGetAsync(string reference)
+        public async Task<IActionResult> OnGetAsync(string referenceFile)
         {
-            if (string.IsNullOrEmpty(reference))
-                return BadRequest("Reference name cannot be null or empty.");
+            if (string.IsNullOrEmpty(referenceFile))
+                return BadRequest("Reference File name cannot be null or empty.");
 
             // TODO: Make path configurable or use a safer method to construct paths.
-            var filePathAndName = Path.Combine("/CentralSecurityService/References", reference);
+            var filePathAndName = Path.Combine("/CentralSecurityService/References", referenceFile);
 
             if (!System.IO.File.Exists(filePathAndName))
                 return NotFound();
