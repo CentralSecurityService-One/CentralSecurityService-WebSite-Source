@@ -1,4 +1,5 @@
 using Microsoft.Extensions.FileProviders;
+using Serilog;
 
 namespace CentralSecurityService
 {
@@ -8,7 +9,13 @@ namespace CentralSecurityService
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Configure Serilog using appsettings.json
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();            // Add services to the container.
+
             builder.Services.AddRazorPages();
 
             var app = builder.Build();
