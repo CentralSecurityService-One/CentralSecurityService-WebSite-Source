@@ -1,0 +1,39 @@
+/* CentralSecurityService.css: V1.0.0.0: 2022_04_13: Created by Eamonn Anthony Duffy. */
+
+#divLogo {
+    padding-left: 10px;
+    float: left;
+}
+
+#divTitleAndTagLine {
+    float: left;
+}
+
+#divTitle {
+    float: left;
+}
+
+#divTagLine {
+    clear: left;
+}
+
+#divDateAndTime {
+    color: mediumvioletred;
+}
+
+#imgLogo {
+    height: 75px;
+}
+
+#iTagLine {
+    color: violet;
+}
+
+nav {
+    clear: both;
+    --items: 6;
+}
+
+h1 {
+    color: orange;
+}
