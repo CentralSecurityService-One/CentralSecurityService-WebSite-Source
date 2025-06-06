@@ -13,6 +13,13 @@
 
     <link rel="stylesheet" href="Branding/V1.0.0.0/CentralSecurityService.css" asp-append-version="true" />
 </head>
+@{
+    bool isDebug = false;
+
+#if DEBUG
+    isDebug = true;
+#endif
+}
 <body>
     <header id="headerCentralSecurityService">
         <div id="divLogo">
@@ -43,8 +50,13 @@
             &nbsp;
             <a href="/About">About</a>
             &nbsp;
-            <a href="/Development">Development</a>
-            <hr />
+            @if (isDebug)
+            {
+                <text>
+                    <a href="/Development">Development</a>
+                    &nbsp;
+                </text>
+            }
         </nav>
     </header>
 
