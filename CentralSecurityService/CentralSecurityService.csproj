@@ -15,4 +15,8 @@
     <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Eadent.Common\Eadent.Common.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,3 @@
+[submodule "Eadent.Common"]
+	path = Eadent.Common
+	url = git@github.com:Eadent/Eadent-Common-Module-Source.git
