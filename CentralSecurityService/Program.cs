@@ -24,7 +24,9 @@ namespace CentralSecurityService
 
             services.AddRazorPages();
 
-            builder.Configuration.AddJsonFile("SensitiveSettings/CentralSecurityService.settings.json", optional: false, reloadOnChange: false);
+            builder.Configuration.GetSection(CentralSecurityServiceSettings.SectionName).Get<CentralSecurityServiceSettings>();
+
+            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceSettings.Instance.Sensitive.Folder, "CentralSecurityService.settings.json"), optional: false, reloadOnChange: false);
 
             builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
 

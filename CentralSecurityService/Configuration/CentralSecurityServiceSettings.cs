@@ -12,5 +12,12 @@ namespace CentralSecurityService.Configuration
         {
             Instance = this;
         }
+
+        public class SensitiveSettings
+        {
+            public string Folder { get; set; }
+        }
+
+        public SensitiveSettings Sensitive { get; set; }
     }
 }
