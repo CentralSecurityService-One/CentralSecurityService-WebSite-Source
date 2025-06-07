@@ -25,6 +25,7 @@
     <thead>
         <tr>
             <th>Unique Reference Id</th>
+            <th>Type</th>
             <th>Thumbnail</th>
             <th>Reference Name</th>
             <th>Subject Names</th>
@@ -38,8 +39,9 @@
             {
                 <tr>
                     <td>@{var formatted = $"{reference.UniqueReferenceId:R000_000_000}";}@formatted</td>
+                    <td>@reference.ReferenceTypeId</td>
                     <td>
-                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailRelativeFileName" alt="Thumbnail" /></a>
+                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
                     </td>
                     <td>
                         <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>

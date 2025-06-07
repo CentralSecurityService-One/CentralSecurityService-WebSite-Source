@@ -95,7 +95,7 @@ namespace CentralSecurityService.Pages
                         UniqueReferenceId = uniqueReferenceId,
                         SubReferenceId = 0,
                         ReferenceTypeId = Common.Definitions.ReferenceType.Image,
-                        ThumbnailRelativeFileName = outputFileName,
+                        ThumbnailFileName = outputFileName,
                         ReferenceName = inputFileName,
                         SubjectNames = SubjectNames,
                         Categorisations = Categorisations,

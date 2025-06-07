@@ -1,0 +1,13 @@
+﻿@page
+@model CentralSecurityService.Pages.TestsModel
+@{
+    ViewData["Title"] = "Tests";
+}
+
+<h1>Tests</h1>
+
+<form method="POST">
+    <div>Message: <span>@Model.Message</span></div>
+    <br />
+    <input type="submit" name="Action" value="Add Test Data" />
+</form>
