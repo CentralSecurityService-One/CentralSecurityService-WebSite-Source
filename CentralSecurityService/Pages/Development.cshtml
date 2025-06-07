@@ -16,6 +16,10 @@
 
 <form method="POST" enctype="multipart/form-data">
     <br />
+    <div>Subject Names: <input type="text" asp-for="SubjectNames" /></div>
+    <br />
+    <div>Categorisations: <input type="text" asp-for="Categorisations" /></div>
+    <br />
     <input type="file" id="fileId" asp-for="FileToUpload" />
     <br />
     <input type="submit" id="submitId" name="Action" value="Upload File" />

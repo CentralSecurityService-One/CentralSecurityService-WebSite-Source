@@ -1,5 +1,7 @@
 using CentralSecurityService.Common.Configuration;
 using CentralSecurityService.Common.DataAccess.CentralSecurityService.Databases;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Entities;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Repositories;
 using Eadent.Common.WebApi.ApiClient;
 using Eadent.Common.WebApi.DataTransferObjects.Google;
 using Eadent.Common.WebApi.Helpers;
@@ -15,6 +17,14 @@ namespace CentralSecurityService.Pages
 
         private ICentralSecurityServiceDatabase CentralSecurityServiceDatabase { get; set; }
 
+        private IReferencesRepository ReferencesRepository { get; set; }
+
+        [BindProperty]
+        public string SubjectNames { get; set; }
+
+        [BindProperty]
+        public string Categorisations{ get; set; }
+
         [BindProperty]
         public IFormFile FileToUpload { get; set; }
 
@@ -25,10 +35,11 @@ namespace CentralSecurityService.Pages
         [BindProperty]
         public string GoogleReCaptchaValue { get; set; }
 
-        public DevelopmentModel(ILogger<DevelopmentModel> logger, ICentralSecurityServiceDatabase centralSecurityServiceDatabase)
+        public DevelopmentModel(ILogger<DevelopmentModel> logger, ICentralSecurityServiceDatabase centralSecurityServiceDatabase, IReferencesRepository referencesRepository)
         {
             Logger = logger;
             CentralSecurityServiceDatabase = centralSecurityServiceDatabase;
+            ReferencesRepository = referencesRepository;
         }
 
         public async Task<IActionResult> OnGetAsync(string fileName)
@@ -60,11 +71,12 @@ namespace CentralSecurityService.Pages
                         return;
                     }
 
+
                     long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
 
                     var inputFileName = $"{uniqueReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
 
-                    var outputFileName = $"{uniqueReferenceId:R000_000_000}_001-Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
+                    var outputFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
 
                     // TODO: Make path configurable or use a safer method to construct paths.
                     var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", inputFileName);
@@ -77,6 +89,21 @@ namespace CentralSecurityService.Pages
                     }
 
                     SaveThumbnailAsJpeg(inputFilePathAndName, outputFilePathAndName, 125);
+
+                    var referenceEntity = new ReferenceEntity()
+                    {
+                        UniqueReferenceId = uniqueReferenceId,
+                        SubReferenceId = 0,
+                        ReferenceTypeId = Common.Definitions.ReferenceType.Image,
+                        ThumbnailRelativeFileName = outputFileName,
+                        ReferenceName = inputFileName,
+                        SubjectNames = SubjectNames,
+                        Categorisations = Categorisations,
+                        CreatedDateTimeUtc = DateTime.UtcNow,
+                    };
+
+                    ReferencesRepository.Create(referenceEntity);
+                    ReferencesRepository.SaveChanges();
                 }
                 catch (Exception exception)
                 {

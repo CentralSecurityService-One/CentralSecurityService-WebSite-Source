@@ -1,5 +1,6 @@
 using CentralSecurityService.Common.Configuration;
 using CentralSecurityService.Common.DataAccess.CentralSecurityService.Databases;
+using CentralSecurityService.Common.DataAccess.CentralSecurityService.Repositories;
 using CentralSecurityService.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -27,9 +28,13 @@ namespace CentralSecurityService
 
             builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
 
-            services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(CentralSecurityServiceCommonSettings.Instance.Database.ConnectionString));
+            var connectionString = CentralSecurityServiceCommonSettings.Instance.Database.ConnectionString;
+
+            services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(connectionString));
 
             services.AddScoped<ICentralSecurityServiceDatabase, CentralSecurityServiceDatabase>();
+
+            services.AddTransient<IReferencesRepository, ReferencesRepository>();
 
             var app = builder.Build();
 
