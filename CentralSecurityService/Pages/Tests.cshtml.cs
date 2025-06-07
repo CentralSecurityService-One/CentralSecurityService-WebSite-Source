@@ -64,11 +64,9 @@ namespace CentralSecurityService.Pages
             image.Encode(SKEncodedImageFormat.Jpeg, 90).SaveTo(outputStream);
         }
 
-        private void AddReference(ReferenceType referenceType, string sourceReferenceName, string thumbnailFileName, string subjectNames, string categorisations)
+        private void AddReference(ReferenceType referenceType, string sourceReferenceName, string thumbnailFileName, string description, string categorisations)
         {
             long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
-
-            string referenceFileName = $"{uniqueReferenceId:R000_000_000}_000-{sourceReferenceName}";
 
             string referenceSourceFilePathAndName = null;
 
@@ -78,12 +76,19 @@ namespace CentralSecurityService.Pages
 
             string thumbnailDestinationFilePathAndName = null;
 
-            // TODO: Make path configurable or use a safer method to construct paths.
-            referenceSourceFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Source", sourceReferenceName);
+            string referenceFileName = sourceReferenceName;
 
-            referenceDestinationFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", referenceFileName);
+            if (referenceType == ReferenceType.Image)
+            {
+                // TODO: Make path configurable or use a safer method to construct paths.
+                referenceSourceFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Source", sourceReferenceName);
 
-            System.IO.File.Copy(referenceSourceFilePathAndName, referenceDestinationFilePathAndName, true);
+                referenceDestinationFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", referenceFileName);
+
+                System.IO.File.Copy(referenceSourceFilePathAndName, referenceDestinationFilePathAndName, true);
+
+                referenceFileName = $"{uniqueReferenceId:R000_000_000}_000-{sourceReferenceName}";
+            }
 
             if (!string.IsNullOrWhiteSpace(thumbnailFileName))
             {
@@ -112,7 +117,7 @@ namespace CentralSecurityService.Pages
                 ReferenceTypeId = referenceType,
                 ThumbnailFileName = thumbnailDestinationFileName,
                 ReferenceName = referenceFileName,
-                SubjectNames = subjectNames,
+                Description = description,
                 Categorisations = categorisations,
                 CreatedDateTimeUtc = DateTime.UtcNow,
             };
@@ -135,6 +140,13 @@ namespace CentralSecurityService.Pages
             AddReference(ReferenceType.Image, "09-Andrew_Caras_Altas-Bad_Freemason-At_Least-www.Facebook.com-2022_12_01-420280_10151766083634768_314611671_n.jpg", thumbnailFileName: null, "Andrew Caras-Altas", "\"Bad\" Freemason At Least.");
             AddReference(ReferenceType.Image, "10-Jasmine_Fletcher-MI6-At_Least-1-7766-0-0.jpg", thumbnailFileName: null, "Jasmine Fletcher", "MI6 At Least.");
             AddReference(ReferenceType.Image, "11-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg", thumbnailFileName: null, "Stephen Hadfield", "BSS At Least.");
+            AddReference(ReferenceType.Image, "12-Martin_Simpkins-MI5-Bad_Freemason-20140131_174756.jpg", thumbnailFileName: null, "Martin Simpkins", "MI5, \"Bad\" Freemason.");
+
+            AddReference(ReferenceType.VideoUrl, "https://youtu.be/SXIj-ps1Vg0", thumbnailFileName: null, "2025_06_01_0 - The Square, Tallaght, Dublin, Ireland - (S25+).", "Various.");
+            AddReference(ReferenceType.VideoUrl, "https://youtu.be/CM7IULLHv9U", thumbnailFileName: null, "2025_06_03_0 - Liffey Valley, Dublin, Ireland - (S25+).", "Various.");
+            AddReference(ReferenceType.VideoUrl, "https://youtu.be/65snrvUBdrw", thumbnailFileName: null, "2025_06_04_0 - Stillorgan, Dublin, Ireland - Rotated 180 Degrees - (S25+ And Microsoft Clipchamp).", "Various.");
+            AddReference(ReferenceType.VideoUrl, "https://youtu.be/4veAudVmrlk", thumbnailFileName: null, "2025_06_04_1 - Stillorgan, Dublin, Ireland - (S25+)</a>.", "Various.");
+            AddReference(ReferenceType.VideoUrl, "https://youtu.be/u8gaUxAoAXg", thumbnailFileName: null, "2025_06_06_0 - Tesco, Liffey Valley, Dublin, Ireland - (S25+).", "Various.");
 
             Message = "Test data added successfully.";
         }

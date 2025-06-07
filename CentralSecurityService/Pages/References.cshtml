@@ -28,7 +28,7 @@
             <th>Type</th>
             <th>Thumbnail</th>
             <th>Reference Name</th>
-            <th>Subject Names</th>
+            <th>Description</th>
             <th>Categorisations</th>
         </tr>
     </thead>
@@ -41,12 +41,22 @@
                     <td>@{var formatted = $"{reference.UniqueReferenceId:R000_000_000}";}@formatted</td>
                     <td>@reference.ReferenceTypeId</td>
                     <td>
-                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
+                        @if (reference.ReferenceTypeId == Common.Definitions.ReferenceType.Image)
+                        {
+                            <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailFileName" alt="Thumbnail" /></a>
+                        }
                     </td>
                     <td>
-                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>
+                        @if (reference.ReferenceTypeId == Common.Definitions.ReferenceType.Image)
+                        {
+                            <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>
+                        }
+                        else
+                        {
+                            <a target="_blank" href="@reference.ReferenceName">@reference.ReferenceName</a>
+                        }
                     </td>
-                    <td>@reference.SubjectNames</td>
+                    <td>@reference.Description</td>
                     <td>@reference.Categorisations</td>
                 </tr>
             }

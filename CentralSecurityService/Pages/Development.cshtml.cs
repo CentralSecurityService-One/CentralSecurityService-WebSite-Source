@@ -20,7 +20,7 @@ namespace CentralSecurityService.Pages
         private IReferencesRepository ReferencesRepository { get; set; }
 
         [BindProperty]
-        public string SubjectNames { get; set; }
+        public string Description { get; set; }
 
         [BindProperty]
         public string Categorisations{ get; set; }
@@ -97,7 +97,7 @@ namespace CentralSecurityService.Pages
                         ReferenceTypeId = Common.Definitions.ReferenceType.Image,
                         ThumbnailFileName = outputFileName,
                         ReferenceName = inputFileName,
-                        SubjectNames = SubjectNames,
+                        Description = Description,
                         Categorisations = Categorisations,
                         CreatedDateTimeUtc = DateTime.UtcNow,
                     };
