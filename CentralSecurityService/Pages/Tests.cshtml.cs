@@ -80,14 +80,14 @@ namespace CentralSecurityService.Pages
 
             if (referenceType == ReferenceType.Image)
             {
+                referenceFileName = $"{uniqueReferenceId:R000_000_000}_000-{sourceReferenceName}";
+
                 // TODO: Make path configurable or use a safer method to construct paths.
                 referenceSourceFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Source", sourceReferenceName);
 
                 referenceDestinationFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", referenceFileName);
 
                 System.IO.File.Copy(referenceSourceFilePathAndName, referenceDestinationFilePathAndName, true);
-
-                referenceFileName = $"{uniqueReferenceId:R000_000_000}_000-{sourceReferenceName}";
             }
 
             if (!string.IsNullOrWhiteSpace(thumbnailFileName))
