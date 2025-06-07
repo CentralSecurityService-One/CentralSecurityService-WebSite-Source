@@ -10,6 +10,55 @@
 
 <h1>References</h1>
 
+<style>
+    table, th, td {
+        border: 1px solid #333;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 6px 10px;
+    }
+</style>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Unique Reference Id</th>
+            <th>Thumbnail</th>
+            <th>Reference Name</th>
+            <th>Subject Names</th>
+            <th>Categorisations</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.References != null && Model.References.Any())
+        {
+            foreach (var reference in Model.References)
+            {
+                <tr>
+                    <td>@{var formatted = $"{reference.UniqueReferenceId:R000_000_000}";}@formatted</td>
+                    <td>
+                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName"><img src="/GetReferenceFile?referenceFile=@reference.ThumbnailRelativeFileName" alt="Thumbnail" /></a>
+                    </td>
+                    <td>
+                        <a target="_blank" href="/GetReferenceFile?referenceFile=@reference.ReferenceName">@reference.ReferenceName</a>
+                    </td>
+                    <td>@reference.SubjectNames</td>
+                    <td>@reference.Categorisations</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">No references found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@*
 <a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_000_000-Elizabeth_Lydia_Manningham_Buller-www.Wikipedia.org-2022_08_14.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_000_001-Width_125-Elizabeth_Lydia_Manningham_Buller-www.Wikipedia.org-2022_08_14.jpg" /></a>
 <a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_000_000-Elizabeth_Lydia_Manningham_Buller-www.Wikipedia.org-2022_08_14.jpg">R000_000_000: Elizabeth Lydia Manningham-Buller</a>.
 <br />
@@ -46,5 +95,6 @@
 <a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_011_000-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg"><img src="/GetReferenceFile?referenceFile=R000_000_011_001-Width_125-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg" /></a>
 <a target="_blank" href="/GetReferenceFile?referenceFile=R000_000_011_000-Stephen_Hadfield-BSS-At_Least-1_0_1_1-0.jpg">R000_000_011: Stephen Hadfield</a>.
 <br />
+*@
 
 <br />

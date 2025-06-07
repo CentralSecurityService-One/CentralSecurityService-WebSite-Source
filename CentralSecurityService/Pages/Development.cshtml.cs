@@ -79,9 +79,9 @@ namespace CentralSecurityService.Pages
                     var outputFileName = $"{uniqueReferenceId:R000_000_000}_000-Thumbnail_Width_125-{Path.GetFileNameWithoutExtension(FileToUpload.FileName)}.jpg";
 
                     // TODO: Make path configurable or use a safer method to construct paths.
-                    var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", inputFileName);
+                    var inputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", inputFileName);
 
-                    var outputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles/Uploads", outputFileName);
+                    var outputFilePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", outputFileName);
 
                     using (var fileStream = new FileStream(inputFilePathAndName, FileMode.Create))
                     {
