@@ -145,7 +145,7 @@ namespace CentralSecurityService.Pages
             AddReference(ReferenceType.VideoUrl, "https://youtu.be/SXIj-ps1Vg0", thumbnailFileName: null, "2025_06_01_0 - The Square, Tallaght, Dublin, Ireland - (S25+).", "Various.");
             AddReference(ReferenceType.VideoUrl, "https://youtu.be/CM7IULLHv9U", thumbnailFileName: null, "2025_06_03_0 - Liffey Valley, Dublin, Ireland - (S25+).", "Various.");
             AddReference(ReferenceType.VideoUrl, "https://youtu.be/65snrvUBdrw", thumbnailFileName: null, "2025_06_04_0 - Stillorgan, Dublin, Ireland - Rotated 180 Degrees - (S25+ And Microsoft Clipchamp).", "Various.");
-            AddReference(ReferenceType.VideoUrl, "https://youtu.be/4veAudVmrlk", thumbnailFileName: null, "2025_06_04_1 - Stillorgan, Dublin, Ireland - (S25+)</a>.", "Various.");
+            AddReference(ReferenceType.VideoUrl, "https://youtu.be/4veAudVmrlk", thumbnailFileName: null, "2025_06_04_1 - Stillorgan, Dublin, Ireland - (S25+).", "Various.");
             AddReference(ReferenceType.VideoUrl, "https://youtu.be/u8gaUxAoAXg", thumbnailFileName: null, "2025_06_06_0 - Tesco, Liffey Valley, Dublin, Ireland - (S25+).", "Various.");
 
             Message = "Test data added successfully.";
