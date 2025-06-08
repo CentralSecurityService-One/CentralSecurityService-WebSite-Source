@@ -71,7 +71,6 @@ namespace CentralSecurityService.Pages
                         return;
                     }
 
-
                     long uniqueReferenceId = CentralSecurityServiceDatabase.GetNextUniqueReferenceId();
 
                     var inputFileName = $"{uniqueReferenceId:R000_000_000}_000-{FileToUpload.FileName}";
