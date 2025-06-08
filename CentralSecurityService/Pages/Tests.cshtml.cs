@@ -148,6 +148,8 @@ namespace CentralSecurityService.Pages
             AddReference(ReferenceType.VideoUrl, "https://youtu.be/4veAudVmrlk", thumbnailFileName: null, "2025_06_04_1 - Stillorgan, Dublin, Ireland - (S25+).", "Various.");
             AddReference(ReferenceType.VideoUrl, "https://youtu.be/u8gaUxAoAXg", thumbnailFileName: null, "2025_06_06_0 - Tesco, Liffey Valley, Dublin, Ireland - (S25+).", "Various.");
 
+            AddReference(ReferenceType.Image, "13-Éamonn_Anthony_Duffy-A_1-Rotated_90_Degrees_Clockwise-20210924_204416.jpg", "Thumbnail_Width_125-13-Éamonn_Anthony_Duffy-A_1-Rotated_90_Degrees_Clockwise-20210924_204416.jpg", "Eamonn/Éamonn Anthony Duffy.", "None - He is a \"1\".");
+
             Message = "Test data added successfully.";
         }
     }

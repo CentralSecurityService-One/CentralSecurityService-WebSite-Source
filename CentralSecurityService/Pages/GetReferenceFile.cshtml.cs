@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.StaticFiles;
 
 namespace CentralSecurityService.Pages
 {
-    public class GetExhibitModel : PageModel
+    public class GetReferenceFileModel : PageModel
     {
         public async Task<IActionResult> OnGetAsync(string referenceFile)
         {
