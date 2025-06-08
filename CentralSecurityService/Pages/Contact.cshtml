@@ -1,0 +1,59 @@
+﻿@page
+@model CentralSecurityService.Pages.ContactModel
+@{
+    ViewData["Title"] = "Contact";
+}
+
+@section MetaTags {
+    <meta name="keywords" content="Central Security Service, CIA, NSA, MI6, SIS, MI5, GCHQ, Medical, Freemasons, In Memory, Duffy Group, Heritage, Legacy, Societal Development">
+}
+
+<script src="https://www.google.com/recaptcha/api.js?render=@Model.GoogleReCaptchaSiteKey"></script>
+
+<script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Model.GoogleReCaptchaSiteKey', { action: 'homepage' }).then(function (token) {
+            document.getElementById("GoogleReCaptchaValueId").value = token;
+        });
+    });
+</script>
+
+<h1>Contact</h1>
+
+<!-- Credit to GitHub Copilot (Modified). -->
+@if (Model.SuccessMessage != null)
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+@if (Model.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<form method="post">
+    <div>
+        <label asp-for="EMailAddress">Your E-Mail (optional):</label>
+        <input asp-for="EMailAddress" type="email" />
+        <span asp-validation-for="EMailAddress" class="text-danger"></span>
+    </div>
+
+    <p>If you wish to submit one or more Images or Videos, please submit fully qualified Urls for the appropriate Web Site(s)
+        (e.g. YouTube, Vimeo, DropBox, OneDrive, etc.) in the Message field below.
+    </p>
+
+    <p>If you wish to submit one or Urls, please do so as well.</p>
+
+    <div>
+        <label asp-for="Message">Message:</label>
+        <textarea asp-for="Message" rows="6" required></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit">Send</button>
+
+    <input type="hidden" id="GoogleReCaptchaValueId" asp-for="GoogleReCaptchaValue" />
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

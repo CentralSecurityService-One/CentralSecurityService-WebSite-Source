@@ -29,6 +29,9 @@ namespace CentralSecurityService
             builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceSettings.Instance.Sensitive.Folder, "CentralSecurityService.settings.json"), optional: false, reloadOnChange: false);
 
             builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
+            builder.Configuration.GetSection(CentralSecurityServiceSensitiveSettings.SectionName).Get<CentralSecurityServiceSensitiveSettings>();
+
+            var centralSecurityServiceSensitiveSettings = CentralSecurityServiceSensitiveSettings.Instance;
 
             var connectionString = CentralSecurityServiceCommonSettings.Instance.Database.ConnectionString;
 
