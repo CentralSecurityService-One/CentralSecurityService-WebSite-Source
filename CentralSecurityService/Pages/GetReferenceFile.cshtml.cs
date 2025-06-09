@@ -1,3 +1,4 @@
+using CentralSecurityService.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.StaticFiles;
@@ -6,13 +7,30 @@ namespace CentralSecurityService.Pages
 {
     public class GetReferenceFileModel : PageModel
     {
+        private IWebHostEnvironment WebHostEnvironment { get; }
+
+        public GetReferenceFileModel(IWebHostEnvironment webHostEnvironment)
+        {
+            WebHostEnvironment = webHostEnvironment;
+        }
+
         public async Task<IActionResult> OnGetAsync(string referenceFile)
         {
             if (string.IsNullOrEmpty(referenceFile))
                 return BadRequest("Reference File name cannot be null or empty.");
 
-            // TODO: Make path configurable or use a safer method to construct paths.
-            var filePathAndName = Path.Combine("/CentralSecurityService/ReferenceFiles", referenceFile);
+            string referenceFilesFolder = null;
+
+            if (WebHostEnvironment.IsDevelopment())
+            {
+                referenceFilesFolder = CentralSecurityServiceSettings.Instance.References.DevelopmentReferenceFilesFolder;
+            }
+            else
+            {
+                referenceFilesFolder = CentralSecurityServiceSettings.Instance.References.ProductionReferenceFilesFolder;
+            }
+
+            var filePathAndName = Path.Combine(referenceFilesFolder, referenceFile);
 
             if (!System.IO.File.Exists(filePathAndName))
                 return NotFound();

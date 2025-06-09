@@ -20,6 +20,15 @@ namespace CentralSecurityService.Configuration
             public string ProductionFolder { get; set; }
         }
 
+        public class ReferencesSettings
+        {
+            public string DevelopmentReferenceFilesFolder { get; set; }
+
+            public string ProductionReferenceFilesFolder { get; set; }
+        }
+
         public SensitiveSettings Sensitive { get; set; }
+
+        public ReferencesSettings References { get; set; }
     }
 }
