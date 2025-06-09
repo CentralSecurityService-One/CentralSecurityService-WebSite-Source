@@ -39,6 +39,10 @@ namespace CentralSecurityService.Pages
 
         public async Task<IActionResult> OnGetAsync(string fileName)
         {
+#if !DEBUG
+            return LocalRedirect("/");
+#endif
+
             long referenceId = 9235612786; // Example referenceId, replace with actual logic if needed.
 
             var formatted = $"{referenceId:R000_000_000}";

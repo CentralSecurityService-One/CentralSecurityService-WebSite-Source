@@ -27,11 +27,19 @@ namespace CentralSecurityService.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
+#if !DEBUG
+            return LocalRedirect("/");
+#endif
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string action)
         {
+#if !DEBUG
+            return LocalRedirect("/");
+#endif
+
             if (action == "Add Test Data")
             {
             }
