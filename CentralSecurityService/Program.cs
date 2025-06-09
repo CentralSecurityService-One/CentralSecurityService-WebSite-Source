@@ -26,7 +26,14 @@ namespace CentralSecurityService
 
             builder.Configuration.GetSection(CentralSecurityServiceSettings.SectionName).Get<CentralSecurityServiceSettings>();
 
-            builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceSettings.Instance.Sensitive.Folder, "CentralSecurityService.settings.json"), optional: false, reloadOnChange: false);
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceSettings.Instance.Sensitive.DevelopmentFolder, "CentralSecurityService.settings.json"), optional: false, reloadOnChange: false);
+            }
+            else
+            {
+                builder.Configuration.AddJsonFile(Path.Combine(CentralSecurityServiceSettings.Instance.Sensitive.ProductionFolder, "CentralSecurityService.settings.json"), optional: false, reloadOnChange: false);
+            }
 
             builder.Configuration.GetSection(CentralSecurityServiceCommonSettings.SectionName).Get<CentralSecurityServiceCommonSettings>();
             builder.Configuration.GetSection(CentralSecurityServiceSensitiveSettings.SectionName).Get<CentralSecurityServiceSensitiveSettings>();

@@ -15,8 +15,6 @@ namespace CentralSecurityService.Configuration
 
         public class SensitiveSettings
         {
-            public string Folder { get; set; }
-
             public string DevelopmentFolder { get; set; }
 
             public string ProductionFolder { get; set; }
