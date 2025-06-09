@@ -7,10 +7,13 @@ namespace CentralSecurityService.Pages
 {
     public class GetReferenceFileModel : PageModel
     {
+        private ILogger<GetReferenceFileModel> Logger { get; }
+
         private IWebHostEnvironment WebHostEnvironment { get; }
 
-        public GetReferenceFileModel(IWebHostEnvironment webHostEnvironment)
+        public GetReferenceFileModel(ILogger<GetReferenceFileModel> logger, IWebHostEnvironment webHostEnvironment)
         {
+            Logger = logger;
             WebHostEnvironment = webHostEnvironment;
         }
 
