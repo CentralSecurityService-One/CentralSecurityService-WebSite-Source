@@ -70,6 +70,7 @@ namespace CentralSecurityService.Pages
 
                 string htmlBody = $"www.CentralSecurityService.one Contact.<br><br>" +
                     $"Machine Name: <strong>{Environment.MachineName}</strong><br><br>" +
+                    $"Url: <strong>{Request.Scheme}://{Request.Host}{Request.Path}</strong><br><br>" +
                     $"Date & Time (UTC): <strong>{utcNow:dddd, d-MMM-yyyy h:mm:ss tt}</strong><br><br>" +
                     $"Date & Time (Local): <strong>{utcNow.ToLocalTime():dddd, d-MMM-yyyy h:mm:ss tt}</strong><br><br>" +
                     $"Message:<br><br>";
