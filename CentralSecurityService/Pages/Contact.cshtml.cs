@@ -68,17 +68,18 @@ namespace CentralSecurityService.Pages
 
                 DateTime utcNow = DateTime.UtcNow;
 
-                string htmlBody = $"www.CentralSecurityService.one Contact.<br><br>" +
+                string htmlBody = $"<html>www.CentralSecurityService.one Contact.<br><br>" +
                     $"Machine Name: <strong>{Environment.MachineName}</strong><br><br>" +
                     $"Url: <strong>{Request.Scheme}://{Request.Host}{Request.Path}</strong><br><br>" +
                     $"Date & Time (UTC): <strong>{utcNow:dddd, d-MMM-yyyy h:mm:ss tt}</strong><br><br>" +
-                    $"Date & Time (Local): <strong>{utcNow.ToLocalTime():dddd, d-MMM-yyyy h:mm:ss tt}</strong><br><br>" +
-                    $"Message:<br><br>";
-
+                    $"Date & Time (Local): <strong>{utcNow.ToLocalTime():dddd, d-MMM-yyyy h:mm:ss tt}</strong><br><br>";
+                
                 if (!string.IsNullOrWhiteSpace(EMailAddress))
                     htmlBody += $"Sender E-Mail: {EMailAddress}<br><br>";
 
+                htmlBody += $"Message:<br><br>";
                 htmlBody += Message.Replace("\n", "<br>") + "<br><br>";
+                htmlBody += "</html>";
                 
                 var eMailMessage = new MimeMessage();
                 eMailMessage.From.Add(new MailboxAddress(eMailSettings.FromEMailName, eMailSettings.FromEMailAddress));
