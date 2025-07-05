@@ -21,8 +21,6 @@
 
             public string SenderPassword { get; set; }
 
-            public string FromEMailName { get; set; }
-
             public string FromEMailAddress { get; set; }
 
             public string ToEMailName { get; set; }

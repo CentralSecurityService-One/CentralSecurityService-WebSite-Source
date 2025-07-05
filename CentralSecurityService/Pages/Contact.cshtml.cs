@@ -64,7 +64,7 @@ namespace CentralSecurityService.Pages
             {
                 var eMailSettings = CentralSecurityServiceSensitiveSettings.Instance.EMail;
 
-                var subject = "CentralSecurityService.one Contact Page Submission.";
+                var subject = "www.CentralSecurityService.one Contact Page Submission.";
 
                 DateTime utcNow = DateTime.UtcNow;
 
@@ -82,7 +82,7 @@ namespace CentralSecurityService.Pages
                 htmlBody += "</html>";
                 
                 var eMailMessage = new MimeMessage();
-                eMailMessage.From.Add(new MailboxAddress(eMailSettings.FromEMailName, eMailSettings.FromEMailAddress));
+                eMailMessage.From.Add(new MailboxAddress("Central Security Service Contact Page", eMailSettings.FromEMailAddress));
                 eMailMessage.To.Add(new MailboxAddress(eMailSettings.ToEMailName, eMailSettings.ToEMailAddress));
                 eMailMessage.Subject = subject;
                 eMailMessage.Body = new TextPart("html")
