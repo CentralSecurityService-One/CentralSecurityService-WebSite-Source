@@ -34,11 +34,11 @@ namespace CentralSecurityService.Pages
 
             if (type == "Thumbnail")
             {
-                referenceEntity = ReferencesRepository.GetLastOrDefault(where => where.ThumbnailFileName == referenceFile, orderBy => orderBy.ReferenceId);
+                referenceEntity = await ReferencesRepository.GetLastOrDefaultAsync(where => where.ThumbnailFileName == referenceFile, orderBy => orderBy.ReferenceId, HttpContext.RequestAborted);
             }
             else if (type == "Full")
             {
-                referenceEntity = ReferencesRepository.GetLastOrDefault(where => where.ReferenceName == referenceFile, orderBy => orderBy.ReferenceId);
+                referenceEntity = await ReferencesRepository.GetLastOrDefaultAsync(where => where.ReferenceName == referenceFile, orderBy => orderBy.ReferenceId, HttpContext.RequestAborted);
             }
 
             if ((referenceEntity == null) || ((referenceEntity != null) && referenceEntity.Redacted))

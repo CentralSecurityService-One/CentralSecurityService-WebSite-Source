@@ -23,7 +23,7 @@ namespace CentralSecurityService.Pages
         {
             Logger.LogInformation("References page accessed.");
 
-            References = ReferencesRepository.GetAll().ToList(); // Example usage of the repository to fetch all references.
+            References = await ReferencesRepository.GetAllAsync(HttpContext.RequestAborted); // Example usage of the repository to fetch all references.
 
             return Page();
         }
