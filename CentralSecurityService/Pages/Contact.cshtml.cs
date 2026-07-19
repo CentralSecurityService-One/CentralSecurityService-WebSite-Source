@@ -50,6 +50,8 @@ namespace CentralSecurityService.Pages
             if (!ModelState.IsValid)
                 return Page();
 
+            // https://console.cloud.google.com/security/recaptcha/keys?authuser=0&project=main-eamonn-duff-1766605779318
+
             (bool success, decimal googleReCaptchaScore) = await GoogleReCaptchaAsync();
 
             GoogleReCaptchaScore = googleReCaptchaScore;
