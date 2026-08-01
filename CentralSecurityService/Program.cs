@@ -45,7 +45,7 @@ namespace CentralSecurityService
 
             if (databaseTypeValue == DatabaseType.SqlServer)
             {
-                Log.Information("Using SQL Server Database.");
+                Log.Information("Using SQL Server for Database: {DatabaseName}", CentralSecurityServiceCommonSettings.Instance.SqlServerDatabase.DatabaseName);
 
                 var connectionString = CentralSecurityServiceCommonSettings.Instance.SqlServerDatabase.ConnectionString;
 
@@ -53,7 +53,7 @@ namespace CentralSecurityService
             }
             else if (databaseTypeValue == DatabaseType.PostgreSql)
             {
-                Log.Information("Using PostgreSQL Database.");
+                Log.Information("Using PostgreSQL for Database: {DatabaseName}", CentralSecurityServiceCommonSettings.Instance.PostgreSqlDatabase.DatabaseName);
 
                 var connectionString = CentralSecurityServiceCommonSettings.Instance.PostgreSqlDatabase.ConnectionString;
 
