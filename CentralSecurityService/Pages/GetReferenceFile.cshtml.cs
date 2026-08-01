@@ -22,7 +22,7 @@ namespace CentralSecurityService.Pages
             ReferencesRepository = referencesRepository;
         }
 
-        public async Task<IActionResult> OnGetAsync(string type, string referenceFile)
+        public async Task<IActionResult> OnGetAsync(string type, string referenceFile, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(type))
                 return BadRequest("Type name cannot be null or whitespace.");
@@ -32,13 +32,22 @@ namespace CentralSecurityService.Pages
 
             ReferenceEntity referenceEntity = null;
 
-            if (type == "Thumbnail")
+            try
             {
-                referenceEntity = await ReferencesRepository.GetLastOrDefaultAsync(where => where.ThumbnailFileName == referenceFile, orderBy => orderBy.ReferenceId, HttpContext.RequestAborted);
+                if (type == "Thumbnail")
+                {
+                    referenceEntity = await ReferencesRepository.GetLastOrDefaultAsync(where => where.ThumbnailFileName == referenceFile, orderBy => orderBy.ReferenceId, cancellationToken);
+                }
+                else if (type == "Full")
+                {
+                    referenceEntity = await ReferencesRepository.GetLastOrDefaultAsync(where => where.ReferenceName == referenceFile, orderBy => orderBy.ReferenceId, cancellationToken);
+                }
             }
-            else if (type == "Full")
+            catch (Exception exception)
             {
-                referenceEntity = await ReferencesRepository.GetLastOrDefaultAsync(where => where.ReferenceName == referenceFile, orderBy => orderBy.ReferenceId, HttpContext.RequestAborted);
+                Logger.LogError(exception, "An error occurred while fetching the Reference File.");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
             }
 
             if ((referenceEntity == null) || ((referenceEntity != null) && referenceEntity.Redacted))

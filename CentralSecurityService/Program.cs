@@ -2,6 +2,7 @@ using CentralSecurityService.Common.Configuration;
 using CentralSecurityService.Common.DataAccess.CentralSecurityService.Databases;
 using CentralSecurityService.Common.DataAccess.CentralSecurityService.Repositories;
 using CentralSecurityService.Configuration;
+using Eadent.Common.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -40,9 +41,30 @@ namespace CentralSecurityService
 
             var centralSecurityServiceSensitiveSettings = CentralSecurityServiceSensitiveSettings.Instance;
 
-            var connectionString = CentralSecurityServiceCommonSettings.Instance.Database.ConnectionString;
+            int databaseTypeValue = CentralSecurityServiceCommonSettings.Instance.DatabaseTypeValue;
 
-            services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(connectionString));
+            if (databaseTypeValue == DatabaseType.SqlServer)
+            {
+                Log.Information("Using SQL Server Database.");
+
+                var connectionString = CentralSecurityServiceCommonSettings.Instance.SqlServerDatabase.ConnectionString;
+
+                services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseSqlServer(connectionString));
+            }
+            else if (databaseTypeValue == DatabaseType.PostgreSql)
+            {
+                Log.Information("Using PostgreSQL Database.");
+
+                var connectionString = CentralSecurityServiceCommonSettings.Instance.PostgreSqlDatabase.ConnectionString;
+
+                services.AddDbContext<CentralSecurityServiceDatabase>(options => options.UseNpgsql(connectionString));
+            }
+            else
+            {
+                Log.Error($"Unsupported Database Type Value: {databaseTypeValue}");
+
+                throw new InvalidOperationException($"Unsupported Database Type Value: {databaseTypeValue}");
+            }
 
             services.AddScoped<ICentralSecurityServiceDatabase, CentralSecurityServiceDatabase>();
 
